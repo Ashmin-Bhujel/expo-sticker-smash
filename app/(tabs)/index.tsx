@@ -5,9 +5,13 @@ import EmojiPicker from "@/components/EmojiPicker";
 import EmojiSticker from "@/components/EmojiSticker";
 import IconButton from "@/components/IconButton";
 import ImageViewer from "@/components/ImageViewer";
+import domtoimage from "dom-to-image";
 import * as ImagePicker from "expo-image-picker";
-import { useState } from "react";
-import { ImageSourcePropType, StyleSheet, View } from "react-native";
+import * as MediaLibrary from "expo-media-library";
+import { useRef, useState } from "react";
+import { ImageSourcePropType, Platform, StyleSheet, View } from "react-native";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { captureRef } from "react-native-view-shot";
 
 const placeholderImage = require("@/assets/images/background-image.png");
 
@@ -20,6 +24,15 @@ export default function Index() {
   const [pickedEmoji, setPickedEmoji] = useState<
     ImageSourcePropType | undefined
   >(undefined);
+
+  // Screen shot
+  const [status, requestPermission] = MediaLibrary.usePermissions();
+
+  if (status === null) {
+    requestPermission();
+  }
+
+  const imageRef = useRef(null);
 
   // Image picker
   const pickImageAsync = async () => {
@@ -52,19 +65,53 @@ export default function Index() {
   }
 
   async function onSaveImageAsync() {
-    // Later
+    if (Platform.OS !== "web") {
+      try {
+        // Get screenshot URI
+        const screenShotURI = await captureRef(imageRef, {
+          width: 320,
+          height: 440,
+          quality: 1,
+        });
+
+        // Save to device
+        await MediaLibrary.saveToLibraryAsync(screenShotURI);
+        if (screenShotURI) {
+          alert("Image saved");
+        }
+      } catch (error) {
+        console.error("Something went wrong while saving the image,", error);
+      }
+    } else {
+      try {
+        const dataUrl = await domtoimage.toJpeg(imageRef.current, {
+          width: 320,
+          height: 440,
+          quality: 0.95,
+        });
+
+        let link = document.createElement("a");
+        link.download = "sticker-smash.jpeg";
+        link.href = dataUrl;
+        link.click();
+      } catch (error) {
+        console.error("Something went wrong while saving the image,", error);
+      }
+    }
   }
 
   return (
-    <View style={styles.container}>
+    <GestureHandlerRootView style={styles.container}>
       <View style={styles.imageContainer}>
-        <ImageViewer
-          defaultImage={placeholderImage}
-          selectedImage={selectedImage}
-        />
-        {pickedEmoji && (
-          <EmojiSticker stickerSource={pickedEmoji} imageSize={40} />
-        )}
+        <View ref={imageRef} collapsable={false}>
+          <ImageViewer
+            defaultImage={placeholderImage}
+            selectedImage={selectedImage}
+          />
+          {pickedEmoji && (
+            <EmojiSticker stickerSource={pickedEmoji} imageSize={40} />
+          )}
+        </View>
       </View>
       {showAppOptions ? (
         <View style={styles.optionsContainer}>
@@ -94,7 +141,7 @@ export default function Index() {
       <EmojiPicker isVisible={isModalVisible} onClose={onModalClose}>
         <EmojiList onSelect={setPickedEmoji} onCloseModal={onModalClose} />
       </EmojiPicker>
-    </View>
+    </GestureHandlerRootView>
   );
 }
 
