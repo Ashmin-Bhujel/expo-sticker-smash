@@ -6,14 +6,20 @@ export default function TabLayout() {
     <>
       <Tabs
         screenOptions={{
-          tabBarActiveTintColor: "#ffd33d",
+          tabBarActiveTintColor: "#f0f0f0",
           headerStyle: {
-            backgroundColor: "#25292e",
+            backgroundColor: "#222222",
           },
           headerShadowVisible: false,
           headerTintColor: "#ffffff",
+          headerTitleStyle: {
+            fontFamily: "SpaceGrotesk_400Regular",
+          },
           tabBarStyle: {
-            backgroundColor: "#25292e",
+            backgroundColor: "#222222",
+          },
+          tabBarLabelStyle: {
+            fontFamily: "SpaceGrotesk_400Regular",
           },
         }}
       >

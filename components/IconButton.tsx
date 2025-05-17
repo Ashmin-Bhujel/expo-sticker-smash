@@ -27,7 +27,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   iconButtonLabel: {
-    color: "#fff",
+    color: "#ffffff",
     marginTop: 12,
+    fontFamily: "SpaceGrotesk_400Regular",
   },
 });

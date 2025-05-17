@@ -81,7 +81,7 @@ export default function Index() {
       ) : (
         <View style={styles.footerContainer}>
           <Button
-            label="Choose a image"
+            label="Choose an image"
             theme="primary"
             onPress={pickImageAsync}
           />
@@ -102,7 +102,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: "center",
-    backgroundColor: "#25292e",
+    backgroundColor: "#222222",
   },
   imageContainer: {
     flex: 1,
