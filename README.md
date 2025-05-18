@@ -19,3 +19,7 @@ The app from React Native/Expo docs tutorial, Where we can add emoji stickers to
   ```
 
 - View the project preview from `Expo Go` app or device simulator or through browser at `localhost:8081`
+
+## Application Preview
+
+![Preview of the Sticker Smash application](./assets/images/preview.png)
